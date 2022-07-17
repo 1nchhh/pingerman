@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const https_1 = __importDefault(require("https"));
 const net_1 = __importDefault(require("net"));
 let urls = [];
+const url = `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`;
 setInterval(() => {
     console.log('ping');
     for (let i = 0; i < urls.length; i++) {
@@ -29,7 +30,9 @@ function connect() {
     socket.on('data', (data) => {
         urls.push(data.toString().trim());
     });
-    socket.connect(server);
+    socket.connect(server, () => {
+        socket.write(url);
+    });
     socket.once('close', () => {
         console.log('close');
         setTimeout(connect, 1000);
